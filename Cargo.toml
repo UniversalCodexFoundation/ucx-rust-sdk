@@ -1,0 +1,90 @@
+# =============================================================================
+# Unicodex Rust SDK — Cargo 包清单 / Package Manifest
+# =============================================================================
+# 这是 Unicodex 阅读器 SDK 的 Rust 实现（facade 门面）。
+# 它通过 path 依赖复用工作区中现有的 `ucx-parse` / `ucx-verify` / `ucx-crypto`
+# / `ucx-types` crate，并 re-export 一套符合 SDK-API.md 契约的整洁公开 API
+# （`UcxArchive::open` 等），尽量直接调用既有函数而非重写密码学逻辑。
+#
+# This is the Rust implementation of the Unicodex reader SDK (a facade).
+# It reuses the existing workspace crates `ucx-parse` / `ucx-verify` /
+# `ucx-crypto` / `ucx-types` via path dependencies and re-exports a clean
+# public API conforming to SDK-API.md, delegating to the proven upstream
+# functions rather than re-implementing cryptography.
+# =============================================================================
+
+[package]
+# crate 名固定为 `unicodex`（契约 §2 命名映射）。
+# The crate is named `unicodex` per the SDK-API naming map (§2).
+name = "unicodex"
+# 统一版本号方案（见项目 ADR-012）：前两位 0.4 = 所支持的 UCX 标准版本，
+# 末位 0 = 本 SDK 自身补丁号。当前 0.4.0 对应 UCX 标准 0.4.x。
+# Unified versioning scheme (project ADR-012): the first two segments (0.4) track
+# the supported UCX standard version; the last segment (0) is this SDK's own patch
+# level. 0.4.0 corresponds to UCX standard 0.4.x.
+version = "0.4.0"
+# 必须使用 Rust 2024 edition（项目硬性要求）。
+# Rust 2024 edition is mandatory for this project.
+edition = "2024"
+# 双许可，与父项目一致。
+# Dual-licensed, matching the parent project.
+license = "MIT OR Apache-2.0"
+description = "Read-only reader SDK for the Unicodex (.ucx) novel container format: parse, integrity, signature verification, and UCXE decryption."
+repository = "https://github.com/unicodex/unicodex"
+authors = ["Unicodex Contributors"]
+rust-version = "1.85"
+readme = "README.md"
+keywords = ["unicodex", "ucx", "ebook", "novel", "crypto"]
+categories = ["parsing", "cryptography"]
+
+# -----------------------------------------------------------------------------
+# 独立 workspace 根 / Standalone workspace root
+# -----------------------------------------------------------------------------
+# 该 SDK 位于父仓库 `.gitignore` 忽略的 `sdk/rust/` 下，并非父工作区成员。
+# 声明一个空的 `[workspace]` 表，使本 crate 成为自己的工作区根，避免被父工作区
+# 的成员列表收编（父工作区使用显式 members 列表，未包含本目录）。
+# path 依赖指向的 `ucx-*` crate 仍属于其各自的父工作区，并在那里解析其
+# `version.workspace = true` / `dep.workspace = true` 继承。
+#
+# This SDK lives under `sdk/rust/` (ignored by the parent repo `.gitignore`)
+# and is not a member of the parent workspace. Declaring an empty `[workspace]`
+# table makes this crate its own workspace root, so Cargo does not try to
+# fold it into the parent workspace's explicit member list. The `ucx-*` path
+# dependencies still belong to their own parent workspace and resolve their
+# `*.workspace = true` inheritance there.
+[workspace]
+
+# -----------------------------------------------------------------------------
+# 依赖 / Dependencies
+# -----------------------------------------------------------------------------
+[dependencies]
+# 上游 facade 依赖：阅读/解析、签名验证、加解密、共享类型。
+# Upstream facade dependencies: parse/read, signature verify, crypto, shared types.
+ucx-parse  = { path = "../../ucx-parse" }
+ucx-verify = { path = "../../ucx-verify" }
+ucx-crypto = { path = "../../ucx-crypto" }
+ucx-types  = { path = "../../ucx-types" }
+
+# BLAKE3 + Base64：完整性自校验（与上游实现一致），并用于一致性测试断言。
+# BLAKE3 + Base64: used internally for integrity recomputation matching upstream.
+blake3 = "1.8"
+base64 = "0.22"
+
+# 错误模型用 thiserror 派生；错误映射里需要匹配 `zip::result::ZipError`（其类型
+# 由 ucx-parse 的 ParseError::Zip 携带），故 zip 版本须与上游 8.x 对齐。
+# The error model derives with thiserror; the error mapping matches
+# `zip::result::ZipError` (carried by ucx-parse's ParseError::Zip), so the zip
+# version must align with upstream's 8.x.
+thiserror = "2.0"
+zip = "8.0"
+
+# 解密 API 需要把内存中的 UCXE 字节落到临时文件，以复用上游 `decrypt*`（接受 &Path）。
+# The decrypt API writes in-memory UCXE bytes to a temp file to reuse the
+# upstream `decrypt*` functions (which take a `&Path`), preserving their
+# opaque error-folding (防 oracle).
+tempfile = "3"
+
+[dev-dependencies]
+# 测试中用 serde_json 读取 testdata/expected.json 的断言期望值。
+# Tests read assertion expectations from testdata/expected.json via serde_json.
+serde_json = "1.0"

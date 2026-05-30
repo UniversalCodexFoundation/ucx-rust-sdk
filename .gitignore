@@ -1,0 +1,30 @@
+# =============================================================================
+# Unicodex Rust SDK — .gitignore
+# =============================================================================
+# 目的：当本 SDK 目录被 `git init` 初始化为独立子仓库时，避免把 Cargo 构建产物
+#       与本地缓存提交进去。源码（src/、tests/、testdata/、Cargo.toml、
+#       Cargo.lock、README.md、LICENSE）应当被追踪。
+# Purpose: when this SDK directory is `git init`-ed as a standalone sub-repo,
+#          keep Cargo build artifacts and local caches out of version control.
+# =============================================================================
+
+# Cargo/rustc 编译输出目录（构建产物，体积大、可重建）。
+# Cargo/rustc compilation output directory (large, regenerable build artifacts).
+/target/
+target/
+
+# rustc 增量编译缓存（若被配置到非默认位置）。
+# Incremental compilation cache (when redirected outside target/).
+**/*.rs.bk
+
+# 后端 panic 时产生的核心转储。
+# Core dumps produced on backend panics.
+*.pdb
+
+# 本地环境与编辑器杂项。
+# Local environment and editor cruft.
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
