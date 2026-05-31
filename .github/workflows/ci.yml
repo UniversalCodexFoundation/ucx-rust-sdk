@@ -1,11 +1,14 @@
 # Unicodex Rust SDK -- CI Pipeline
 # Unicodex Rust SDK -- CI 持续集成流水线
 #
-# This workflow runs on every push/PR to main/master.
-# 本工作流在每次推送/PR 到 main/master 分支时运行。
+# NOTE: This SDK is a facade crate that depends on sibling ucx-* workspace
+# crates via path references. Build/test/clippy require the full Unicodex
+# workspace and cannot run in this standalone repo. Only format checking
+# is possible here. Full CI runs in the parent Unicodex workspace.
 #
-# Jobs: build, test, clippy (lint), fmt (format check)
-# 任务: 构建, 测试, clippy (静态检查), fmt (格式检查)
+# 注意：本 SDK 是 facade crate，通过路径引用依赖父 workspace 的 ucx-* crate。
+# 构建/测试/clippy 需要完整的 Unicodex workspace，无法在独立仓库中运行。
+# 此处仅执行格式检查。完整 CI 在父仓库 Unicodex workspace 中运行。
 
 name: CI
 
@@ -15,82 +18,18 @@ on:
   pull_request:
     branches: [main, master]
 
-# Minimal permissions -- read-only access to repository contents.
-# 最小权限 -- 仅读取仓库内容。
 permissions:
   contents: read
 
-# Cancel redundant runs on the same ref (e.g. rapid pushes).
-# 取消同一 ref 上的冗余运行（例如快速连续推送）。
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   # -----------------------------------------------------------
-  # Build -- compile the crate in release mode.
-  # 构建 -- 以 release 模式编译 crate。
-  # -----------------------------------------------------------
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the repository.
-      # 检出仓库代码。
-      - uses: actions/checkout@v6
-
-      # Install the stable Rust toolchain.
-      # 安装稳定版 Rust 工具链。
-      - uses: dtolnay/rust-toolchain@stable
-
-      # Cache Cargo registry, index, and build artifacts.
-      # 缓存 Cargo 注册表、索引和构建产物。
-      - uses: Swatinem/rust-cache@v2
-
-      # Compile the project.
-      # 编译项目。
-      - name: Cargo build
-        run: cargo build
-
-  # -----------------------------------------------------------
-  # Test -- run the full test suite.
-  # 测试 -- 运行完整测试套件。
-  # -----------------------------------------------------------
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-
-      # Execute all tests.
-      # 执行全部测试。
-      - name: Cargo test
-        run: cargo test
-
-  # -----------------------------------------------------------
-  # Clippy -- static analysis / linting.
-  # Clippy -- 静态分析 / 代码检查。
-  # -----------------------------------------------------------
-  clippy:
-    name: Clippy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
-      - uses: Swatinem/rust-cache@v2
-
-      # Run clippy and treat all warnings as errors.
-      # 运行 clippy 并将所有警告视为错误。
-      - name: Cargo clippy
-        run: cargo clippy --all-targets -- -D warnings
-
-  # -----------------------------------------------------------
-  # Fmt -- verify code formatting.
-  # Fmt -- 验证代码格式。
+  # Fmt -- verify code formatting (the only check possible
+  # without the parent workspace).
+  # Fmt -- 验证代码格式（独立仓库中唯一可执行的检查）。
   # -----------------------------------------------------------
   fmt:
     name: Rustfmt
@@ -100,8 +39,5 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-
-      # Check that all source files are properly formatted.
-      # 检查所有源文件是否已正确格式化。
       - name: Cargo fmt check
         run: cargo fmt --all -- --check
