@@ -13,7 +13,7 @@ via path dependencies and re-exports a clean public API conforming to
 Scope: **parse + integrity + dual-layer signature verification + UCXE
 decryption**. It does **not** write, sign, or encrypt.
 
-- License: `MIT OR Apache-2.0`
+- License: `MIT`
 - Edition: Rust 2024
 - Capability level: **L3 (decryption)** — the highest tier.
 
@@ -207,5 +207,5 @@ cargo test
 
 ## License
 
-Licensed under either of MIT or Apache-2.0 at your option (`MIT OR Apache-2.0`),
+Licensed under either of MIT or Apache-2.0 at your option (`MIT`),
 matching the parent project. See [`LICENSE`](LICENSE).

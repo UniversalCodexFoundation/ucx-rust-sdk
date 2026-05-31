@@ -26,9 +26,9 @@ version = "0.4.0"
 # 必须使用 Rust 2024 edition（项目硬性要求）。
 # Rust 2024 edition is mandatory for this project.
 edition = "2024"
-# 双许可，与父项目一致。
-# Dual-licensed, matching the parent project.
-license = "MIT OR Apache-2.0"
+# MIT 许可，与父项目一致。
+# MIT licensed, matching the parent project.
+license = "MIT"
 description = "Read-only reader SDK for the Unicodex (.ucx) novel container format: parse, integrity, signature verification, and UCXE decryption."
 repository = "https://github.com/unicodex/unicodex"
 authors = ["Unicodex Contributors"]

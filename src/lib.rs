@@ -1,7 +1,7 @@
 // =============================================================================
 // Unicodex Rust SDK — crate 根 / Crate root
 // =============================================================================
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: MIT
 //
 // 这是 Unicodex 阅读器 SDK 的 Rust 实现（facade 门面）。它通过 path 依赖复用工作区
 // 既有的 `ucx-parse` / `ucx-verify` / `ucx-crypto` / `ucx-types`，并 re-export 一套
