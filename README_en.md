@@ -1,4 +1,4 @@
-[English](README_en.md) | 中文
+English | [中文](README.md)
 
 # unicodex (Rust SDK)
 
@@ -13,9 +13,9 @@ via path dependencies and re-exports a clean public API conforming to
 Scope: **parse + integrity + dual-layer signature verification + UCXE
 decryption**. It does **not** write, sign, or encrypt.
 
-- License: `MIT OR Apache-2.0`
+- License: `MIT`
 - Edition: Rust 2024
-- Capability level: **L3 (decryption)** — the highest tier.
+- Capability level: **L3 (decryption)** -- the highest tier.
 
 ---
 
@@ -155,7 +155,7 @@ This SDK reaches **L3** (the maximum reader tier).
 
 ## Conformance tests
 
-`tests/conformance.rs` implements T1–T10 from `SDK-API.md §8`, asserting against
+`tests/conformance.rs` implements T1--T10 from `SDK-API.md S8`, asserting against
 the bundled `testdata/expected.json` and fixtures (copied from `sdk/testdata/`,
 so this SDK is self-contained):
 
@@ -194,18 +194,16 @@ cargo test
 
 ---
 
-## 版本号说明 (Versioning)
+## Versioning
 
-本 SDK 采用 `X.Y.Z` 版本号（见项目 ADR-012）：
-- **`X.Y`**（前两位）= 所支持的 **UCX 标准版本**（major.minor）。**前两位相同 ⇒ 支持同一 UCX 标准、对外 API 相同**。
-- **`Z`**（末位）= 本 SDK 自身的补丁号（修 bug、不改对外 API）。
+This SDK uses `X.Y.Z` version numbers (see project ADR-012):
+- **`X.Y`** (the first two parts) = the supported **UCX standard version** (major.minor). **Identical first two parts imply the same UCX standard and the same public API**.
+- **`Z`** (the last part) = the SDK's own patch number (bug fixes only; no public API changes).
 
-当前版本 **0.4.0** 对应 UCX 标准 **0.4.x**。当 UCX 标准升级到下一个 minor（如 0.5）时会有新的 SDK 线（0.5.x），
-而旧标准线（0.4.x）**持续发布补丁、不被废弃**（类似 Python 对多个版本系列并行维护）。
+The current version **0.4.0** corresponds to UCX standard **0.4.x**. When the UCX standard advances to the next minor version (e.g. 0.5), a new SDK line (0.5.x) will be created, while the old standard line (0.4.x) **continues to receive patches and is not deprecated** (similar to how Python maintains multiple version series in parallel).
 
 ---
 
 ## License
 
-Licensed under either of MIT or Apache-2.0 at your option (`MIT OR Apache-2.0`),
-matching the parent project. See [`LICENSE`](LICENSE).
+Licensed under `MIT`, matching the parent project. See [`LICENSE`](LICENSE).
